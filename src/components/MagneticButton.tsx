@@ -46,7 +46,7 @@ export default function MagneticButton({ children, className = '', onClick, href
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ x: xSpring, y: ySpring }}
-      className="inline-block"
+      className="flex items-center justify-center"
     >
       <Component
         {...props}

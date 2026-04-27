@@ -149,11 +149,12 @@ export default function FloatingElements() {
   const [elements, setElements] = useState<FloatingElement[]>([]);
 
   useEffect(() => {
-    setElements(generateElements(25));
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setElements(generateElements(prefersReduced ? 0 : 12));
   }, []);
 
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-[1]">
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-[1] fx-dark-only">
       {elements.map((element) => (
         <motion.div
           key={element.id}

@@ -1,6 +1,6 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere, Environment, Stars, Text, Box, Torus, Icosahedron } from '@react-three/drei';
-import { useRef, useMemo, Suspense, useState } from 'react';
+import { Float, MeshDistortMaterial, Sphere, Stars, Torus, Icosahedron } from '@react-three/drei';
+import { useRef, useMemo, Suspense, useState, useEffect } from 'react';
 import * as THREE from 'three';
 
 // Floating Code Block - 3D Terminal
@@ -198,7 +198,7 @@ function MorphingSphere({ position, size = 2 }: { position: [number, number, num
     <Float speed={1.5} rotationIntensity={0.3} floatIntensity={2}>
       <Sphere
         ref={meshRef}
-        args={[size, 64, 64]}
+        args={[size, 32, 32]}
         position={position}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
@@ -230,21 +230,21 @@ function BinaryRing({ position, radius = 3 }: { position: [number, number, numbe
 
   return (
     <group ref={groupRef} position={position}>
-      <Torus args={[radius, 0.03, 16, 100]}>
+      <Torus args={[radius, 0.03, 12, 64]}>
         <meshStandardMaterial 
           color="#22d3ee"
           emissive="#22d3ee"
           emissiveIntensity={0.8}
         />
       </Torus>
-      <Torus args={[radius * 0.8, 0.02, 16, 100]} rotation={[Math.PI / 4, 0, 0]}>
+      <Torus args={[radius * 0.8, 0.02, 12, 64]} rotation={[Math.PI / 4, 0, 0]}>
         <meshStandardMaterial 
           color="#a855f7"
           emissive="#a855f7"
           emissiveIntensity={0.6}
         />
       </Torus>
-      <Torus args={[radius * 0.6, 0.015, 16, 100]} rotation={[Math.PI / 2, Math.PI / 4, 0]}>
+      <Torus args={[radius * 0.6, 0.015, 12, 64]} rotation={[Math.PI / 2, Math.PI / 4, 0]}>
         <meshStandardMaterial 
           color="#8b5cf6"
           emissive="#8b5cf6"
@@ -290,7 +290,7 @@ function ComplexShape({ position }: { position: [number, number, number] }) {
 // Particle System - like code particles
 function CodeParticles() {
   const pointsRef = useRef<THREE.Points>(null);
-  const particleCount = 500;
+  const particleCount = 220;
 
   const [positions, colors] = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
@@ -302,7 +302,7 @@ function CodeParticles() {
       pos[i * 3 + 2] = (Math.random() - 0.5) * 20 - 5;
 
       const color = new THREE.Color();
-      const hue = Math.random() > 0.5 ? 0.52 : 0.78; // Cyan or purple
+      const hue = Math.random() > 0.5 ? 0.52 : 0.78;
       color.setHSL(hue, 0.8, 0.6);
       col[i * 3] = color.r;
       col[i * 3 + 1] = color.g;
@@ -314,14 +314,8 @@ function CodeParticles() {
 
   useFrame((state) => {
     if (pointsRef.current) {
-      const posArray = pointsRef.current.geometry.attributes.position.array as Float32Array;
-      
-      for (let i = 0; i < particleCount; i++) {
-        posArray[i * 3 + 1] += Math.sin(state.clock.elapsedTime + i * 0.1) * 0.002;
-      }
-      
-      pointsRef.current.geometry.attributes.position.needsUpdate = true;
       pointsRef.current.rotation.y = state.clock.elapsedTime * 0.02;
+      pointsRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.4) * 0.25;
     }
   });
 
@@ -372,21 +366,19 @@ function MouseFollower() {
 function Scene() {
   return (
     <>
-      {/* Dramatic lighting for visibility */}
-      <ambientLight intensity={0.2} />
-      <pointLight position={[10, 10, 10]} intensity={3} color="#22d3ee" />
-      <pointLight position={[-10, -10, -5]} intensity={2} color="#a855f7" />
-      <pointLight position={[0, 10, -10]} intensity={2} color="#8b5cf6" />
-      <spotLight 
-        position={[0, 15, 5]} 
-        angle={0.4} 
-        penumbra={1} 
-        intensity={3} 
-        color="#22d3ee" 
+      {/* Lighting (simplified) */}
+      <ambientLight intensity={0.3} />
+      <pointLight position={[10, 10, 10]} intensity={2.5} color="#22d3ee" />
+      <pointLight position={[-10, -10, -5]} intensity={1.5} color="#a855f7" />
+      <spotLight
+        position={[0, 15, 5]}
+        angle={0.4}
+        penumbra={1}
+        intensity={2}
+        color="#22d3ee"
       />
-      <pointLight position={[-8, 5, 5]} intensity={1.5} color="#ec4899" />
 
-      {/* Main 3D Elements - Software Engineering Theme */}
+      {/* Main 3D Elements */}
       <CodeTerminal position={[4, 1, -2]} />
       <TechCube position={[-4, 2, -4]} size={1.5} />
       <TechCube position={[6, -2, -6]} size={1} />
@@ -398,22 +390,38 @@ function Scene() {
       <CodeParticles />
       <MouseFollower />
 
-      {/* Stars Background */}
-      <Stars radius={80} depth={50} count={2000} factor={4} saturation={0.5} fade speed={0.3} />
-
-      {/* Environment */}
-      <Environment preset="night" />
+      {/* Stars Background (reduced count) */}
+      <Stars radius={80} depth={50} count={800} factor={4} saturation={0.5} fade speed={0.3} />
     </>
   );
 }
 
 export default function HeroScene() {
+  const [isLight, setIsLight] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsLight(!document.documentElement.classList.contains('dark'));
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-[5] pointer-events-none">
+    <div
+      className="fixed inset-0 z-[5] pointer-events-none transition-opacity duration-500"
+      style={{
+        opacity: isLight ? 0.3 : 0.5,
+        maskImage:
+          'radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.4) 45%, black 80%)',
+        WebkitMaskImage:
+          'radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, rgba(0,0,0,0.4) 45%, black 80%)',
+      }}
+    >
       <Canvas
         camera={{ position: [0, 0, 10], fov: 65 }}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        dpr={[1, 2]}
+        gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+        dpr={[1, 1.5]}
         style={{ background: 'transparent', pointerEvents: 'none' }}
       >
         <Suspense fallback={null}>

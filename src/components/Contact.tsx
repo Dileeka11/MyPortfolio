@@ -68,7 +68,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" ref={containerRef} className="py-32 relative overflow-hidden bg-background/80 backdrop-blur-sm">
+    <section id="contact" ref={containerRef} className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-background/80 backdrop-blur-sm">
       {/* Background elements */}
       <motion.div 
         style={{ y }}
@@ -79,13 +79,13 @@ export default function Contact() {
         className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" 
       />
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 80 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, ease: [0.6, -0.05, 0.01, 0.99] }}
-          className="text-center mb-20"
+          className="text-center mb-10 sm:mb-16 lg:mb-20"
         >
           <motion.span
             initial={{ opacity: 0, scale: 0.5, y: 20 }}
@@ -101,7 +101,7 @@ export default function Contact() {
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.3 }}
-            className="text-5xl md:text-6xl font-bold"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold"
           >
             <span className="gradient-text">Let's Work Together</span>
           </motion.h2>
@@ -115,20 +115,21 @@ export default function Contact() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.6 }}
-            className="text-muted-foreground mt-6 max-w-xl mx-auto text-lg"
+            className="text-muted-foreground mt-4 sm:mt-6 max-w-xl mx-auto text-base sm:text-lg"
           >
             Have a project in mind? I'd love to hear about it. Let's create something amazing together.
           </motion.p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 max-w-6xl mx-auto overflow-hidden">
           {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, x: -80 }}
+            initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 1, delay: 0.3, ease: [0.6, -0.05, 0.01, 0.99] }}
+            className="min-w-0 overflow-hidden"
           >
-            <form onSubmit={handleSubmit} className="bg-card/80 backdrop-blur-xl rounded-3xl p-8 relative overflow-hidden border border-border/50 shadow-xl">
+            <form onSubmit={handleSubmit} className="bg-card/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 relative overflow-hidden border border-border/50 shadow-xl">
               {/* Decorative gradient */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full" />
               
@@ -149,7 +150,7 @@ export default function Contact() {
                     onFocus={() => setFocusedField('name')}
                     onBlur={() => setFocusedField(null)}
                     required
-                    className="w-full px-6 py-5 bg-muted/30 border border-border/50 rounded-2xl text-foreground placeholder-transparent peer focus:outline-none focus:border-primary/50 transition-all duration-300"
+                    className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-muted/30 border border-border/50 rounded-xl sm:rounded-2xl text-foreground placeholder-transparent peer focus:outline-none focus:border-primary/50 transition-all duration-300 text-sm sm:text-base"
                     placeholder="Your Name"
                   />
                   <label
@@ -176,7 +177,7 @@ export default function Contact() {
                     onFocus={() => setFocusedField('email')}
                     onBlur={() => setFocusedField(null)}
                     required
-                    className="w-full px-6 py-5 bg-muted/30 border border-border/50 rounded-2xl text-foreground placeholder-transparent peer focus:outline-none focus:border-primary/50 transition-all duration-300"
+                    className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-muted/30 border border-border/50 rounded-xl sm:rounded-2xl text-foreground placeholder-transparent peer focus:outline-none focus:border-primary/50 transition-all duration-300 text-sm sm:text-base"
                     placeholder="Email Address"
                   />
                   <label
@@ -203,7 +204,7 @@ export default function Contact() {
                     onFocus={() => setFocusedField('message')}
                     onBlur={() => setFocusedField(null)}
                     required
-                    className="w-full px-6 py-5 bg-muted/30 border border-border/50 rounded-2xl text-foreground placeholder-transparent peer focus:outline-none focus:border-primary/50 transition-all duration-300 resize-none"
+                    className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-muted/30 border border-border/50 rounded-xl sm:rounded-2xl text-foreground placeholder-transparent peer focus:outline-none focus:border-primary/50 transition-all duration-300 resize-none text-sm sm:text-base"
                     placeholder="Your Message"
                   />
                   <label
@@ -220,25 +221,23 @@ export default function Contact() {
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.8 }}
                   type="submit"
-                  whileHover={{ scale: 1.02, boxShadow: '0 0 40px hsl(190 95% 55% / 0.4)' }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-5 rounded-2xl bg-gradient-to-r from-primary via-accent to-secondary text-primary-foreground font-semibold flex items-center justify-center gap-3 relative overflow-hidden group"
+                  className="w-full py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary via-accent to-secondary text-primary-foreground font-bold text-base sm:text-lg flex items-center justify-center gap-3 relative overflow-hidden group shadow-xl shadow-primary/20"
                 >
+                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-secondary via-accent to-primary"
-                    initial={{ x: '100%' }}
-                    whileHover={{ x: 0 }}
-                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 bg-gradient-to-r from-secondary via-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   />
                   <span className="relative z-10 flex items-center gap-3">
                     {isSubmitted ? (
                       <>
-                        <CheckCircle className="w-5 h-5" />
+                        <CheckCircle className="w-6 h-6" />
                         Message Sent Successfully!
                       </>
                     ) : (
                       <>
-                        <Send className="w-5 h-5" />
+                        <Send className="w-5 h-5 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
                         Send Message
                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </>
@@ -251,17 +250,17 @@ export default function Contact() {
 
           {/* Contact Info & 3D Element */}
           <motion.div
-            initial={{ opacity: 0, x: 80 }}
+            initial={{ opacity: 0, x: 40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 1, delay: 0.5, ease: [0.6, -0.05, 0.01, 0.99] }}
-            className="flex flex-col gap-8"
+            className="flex flex-col gap-8 min-w-0 overflow-hidden"
           >
             {/* 3D Element */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 0.7 }}
-              className="h-64 bg-card/60 backdrop-blur-xl rounded-3xl overflow-hidden relative border border-border/50"
+              className="h-48 sm:h-64 bg-card/60 backdrop-blur-xl rounded-2xl sm:rounded-3xl overflow-hidden relative border border-border/50"
             >
               <Canvas camera={{ position: [0, 0, 6], fov: 50 }}>
                 <ambientLight intensity={0.5} />
@@ -281,7 +280,7 @@ export default function Contact() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.9 }}
-              className="bg-card/80 backdrop-blur-xl rounded-3xl p-8 border border-border/50"
+              className="bg-card/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-border/50"
             >
               <div className="flex items-center gap-4 mb-6">
                 <motion.div 
@@ -289,7 +288,7 @@ export default function Contact() {
                   transition={{ duration: 2, repeat: Infinity }}
                   className="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50" 
                 />
-                <span className="text-foreground font-semibold text-lg">Available for freelance</span>
+                <span className="text-foreground font-semibold text-base sm:text-lg">Available for freelance</span>
               </div>
               
               <div className="space-y-4 mb-8">
@@ -315,7 +314,7 @@ export default function Contact() {
 
               <div className="pt-6 border-t border-border/50">
                 <p className="text-sm text-muted-foreground mb-4">Connect with me</p>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                   {socialLinks.map((social, index) => (
                     <motion.a
                       key={social.label}
@@ -327,7 +326,7 @@ export default function Contact() {
                       transition={{ duration: 0.5, delay: 1.2 + index * 0.1 }}
                       whileHover={{ scale: 1.15, y: -8, rotate: 5 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`p-4 rounded-2xl bg-card border border-border/50 hover:border-transparent transition-all group ${social.color} hover:text-white`}
+                      className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-card border border-border/50 hover:border-transparent transition-all group ${social.color} hover:text-white`}
                     >
                       <social.icon className="w-5 h-5" />
                     </motion.a>
@@ -342,17 +341,17 @@ export default function Contact() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1.3 }}
               whileHover={{ scale: 1.02, y: -5 }}
-              className="bg-card/80 backdrop-blur-xl rounded-3xl p-8 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 border border-primary/20"
+              className="bg-card/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 border border-primary/20"
             >
               <h3 className="text-xl font-semibold text-foreground mb-3">Have a quick question?</h3>
               <p className="text-muted-foreground text-sm mb-4">
                 Feel free to reach out directly via email for faster response.
               </p>
               <a
-                href="mailto:hello@johndoe.dev"
+                href="mailto:hello@supundileeka.dev"
                 className="inline-flex items-center gap-2 text-primary font-medium hover:gap-3 transition-all"
               >
-                hello@johndoe.dev
+                hello@supundileeka.dev
                 <ArrowRight className="w-4 h-4" />
               </a>
             </motion.div>

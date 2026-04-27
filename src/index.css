@@ -1,56 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @layer base {
   :root {
     color-scheme: light;
 
-    /* Light theme (default) */
-    --background: 210 40% 98%;
-    --foreground: 222 47% 8%;
+    /* Light theme (default) — softer, editorial */
+    --background: 220 30% 97%;
+    --foreground: 224 48% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 8%;
+    --card-foreground: 224 48% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 8%;
+    --popover-foreground: 224 48% 12%;
 
-    --primary: 190 95% 45%;
+    --primary: 200 85% 38%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 280 70% 55%;
+    --secondary: 272 62% 48%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 30% 94%;
-    --muted-foreground: 215 20% 40%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 220 14% 42%;
 
-    --accent: 260 80% 55%;
+    --accent: 258 70% 50%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 80% 55%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 20% 86%;
-    --input: 220 20% 86%;
-    --ring: 190 95% 45%;
+    --border: 220 16% 88%;
+    --input: 220 16% 88%;
+    --ring: 200 85% 38%;
 
     --radius: 0.75rem;
 
     /* Custom portfolio tokens */
-    --glow-primary: 190 95% 45%;
-    --glow-secondary: 280 70% 55%;
-    --gradient-start: 190 95% 45%;
-    --gradient-end: 280 70% 55%;
+    --glow-primary: 200 85% 38%;
+    --glow-secondary: 272 62% 48%;
+    --gradient-start: 200 85% 38%;
+    --gradient-end: 272 62% 48%;
 
-    --glass-bg: 0 0% 100% / 0.6;
-    --glass-border: 222 47% 8% / 0.10;
-    --glass-blur: 20px;
+    --glass-bg: 0 0% 100% / 0.72;
+    --glass-border: 224 48% 12% / 0.08;
+    --glass-blur: 16px;
 
-    --shadow-glow: 0 0 60px hsl(190 95% 45% / 0.18);
-    --shadow-glow-lg: 0 0 120px hsl(190 95% 45% / 0.24);
+    --shadow-glow: 0 10px 30px -12px hsl(200 85% 38% / 0.18);
+    --shadow-glow-lg: 0 20px 50px -20px hsl(272 62% 48% / 0.22);
   }
 
   .dark {
@@ -105,25 +105,44 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 10% 0%, hsl(var(--primary) / 0.08), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 100%, hsl(var(--secondary) / 0.08), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image: none;
   }
 
   ::selection {
     @apply bg-primary/30 text-primary;
   }
+
+  /* Hide heavy background FX in light mode for clarity & perf */
+  :root:not(.dark) .fx-dark-only {
+    display: none !important;
+  }
+
+  :root:not(.dark) .fx-dim {
+    opacity: 0.35;
+  }
 }
 
 @layer components {
   .glass {
-    @apply bg-card/60 backdrop-blur-xl border border-border/40 shadow-xl;
+    @apply bg-card/70 backdrop-blur-md border border-border/40 shadow-lg;
   }
 
   .glass-strong {
-    @apply bg-card/80 backdrop-blur-2xl border border-border/60 shadow-2xl;
+    @apply bg-card/85 backdrop-blur-xl border border-border/60 shadow-xl;
   }
 
   .gradient-text {

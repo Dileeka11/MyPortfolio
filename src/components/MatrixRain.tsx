@@ -1,231 +1,191 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 interface CodeColumn {
-  id: number;
   x: number;
   chars: string[];
   speed: number;
   opacity: number;
   fontSize: number;
   color: 'primary' | 'secondary' | 'accent';
+  offset: number;
+  height: number;
 }
 
 const CODE_CHARS = [
-  '0', '1', 
-  '{', '}', '[', ']', '(', ')', '<', '>', 
+  '0', '1', '{', '}', '[', ']', '(', ')', '<', '>',
   '/', '\\', '|', '-', '+', '=', '*', '&', '%', '$', '#', '@',
-  'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-  'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-  'ア', 'イ', 'ウ', 'エ', 'オ', 'カ', 'キ', 'ク', 'ケ', 'コ',
-  '∞', '∑', '∏', '√', '∫', 'Δ', 'π', 'Ω', 'λ', 'φ',
+  'a', 'b', 'c', 'd', 'e', 'f', 'x', 'y', 'z',
+  'ア', 'イ', 'ウ', 'エ', 'オ',
+  '∞', '∑', 'π', 'Ω', 'λ',
 ];
 
 const COLORS: Array<'primary' | 'secondary' | 'accent'> = ['primary', 'secondary', 'accent'];
 
-function generateColumn(id: number, screenWidth: number): CodeColumn {
-  const x = Math.random() * screenWidth;
-  const charCount = 15 + Math.floor(Math.random() * 25);
-  const chars = Array.from({ length: charCount }, () => 
-    CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]
-  );
-  
+function randChar() {
+  return CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
+}
+
+function generateColumn(x: number, screenHeight: number): CodeColumn {
+  const charCount = 14 + Math.floor(Math.random() * 14);
+  const fontSize = 13 + Math.floor(Math.random() * 5);
   return {
-    id,
     x,
-    chars,
-    speed: 0.8 + Math.random() * 2,
-    opacity: 0.15 + Math.random() * 0.25, // Much more visible
-    fontSize: 12 + Math.floor(Math.random() * 8),
+    chars: Array.from({ length: charCount }, randChar),
+    speed: 40 + Math.random() * 90,
+    opacity: 0.18 + Math.random() * 0.22,
+    fontSize,
     color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    offset: -Math.random() * screenHeight,
+    height: charCount * fontSize,
   };
 }
 
-function MatrixColumn({ column }: { column: CodeColumn }) {
-  const [offset, setOffset] = useState(-column.chars.length * column.fontSize);
-  const [chars, setChars] = useState(column.chars);
-  
+export default function MatrixRain() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>();
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setOffset(prev => {
-        const newOffset = prev + column.speed * 2.5;
-        if (newOffset > window.innerHeight + 100) {
-          setChars(Array.from({ length: column.chars.length }, () => 
-            CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]
-          ));
-          return -column.chars.length * column.fontSize;
+    const container = containerRef.current;
+    if (!container) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let columns: CodeColumn[] = [];
+    let columnEls: HTMLDivElement[] = [];
+    let charEls: HTMLSpanElement[][] = [];
+
+    const build = () => {
+      container.innerHTML = '';
+      columnEls = [];
+      charEls = [];
+
+      const spacing = 60; // fewer columns = smoother
+      const count = Math.floor(width / spacing);
+      columns = Array.from({ length: count }, (_, i) =>
+        generateColumn(i * spacing + Math.random() * 20, height)
+      );
+
+      const frag = document.createDocumentFragment();
+      columns.forEach((col) => {
+        const el = document.createElement('div');
+        el.className = 'absolute font-mono select-none pointer-events-none';
+        el.style.left = `${col.x}px`;
+        el.style.top = '0';
+        el.style.fontSize = `${col.fontSize}px`;
+        el.style.opacity = String(col.opacity);
+        el.style.writingMode = 'vertical-rl';
+        el.style.willChange = 'transform';
+        el.style.transform = `translate3d(0, ${col.offset}px, 0)`;
+
+        const colorVar = `--${col.color}`;
+        const spans: HTMLSpanElement[] = [];
+        col.chars.forEach((ch, index) => {
+          const span = document.createElement('span');
+          const isHead = index >= col.chars.length - 3;
+          const brightness = isHead ? 1 : 0.25 + (index / col.chars.length) * 0.7;
+          span.textContent = ch;
+          span.style.display = 'inline-block';
+          span.style.color = `hsl(var(${colorVar}) / ${brightness})`;
+          span.style.fontWeight = isHead ? '600' : '400';
+          if (isHead) {
+            span.style.textShadow = `0 0 10px hsl(var(${colorVar})), 0 0 20px hsl(var(${colorVar}) / 0.5)`;
+          }
+          el.appendChild(span);
+          spans.push(span);
+        });
+
+        frag.appendChild(el);
+        columnEls.push(el);
+        charEls.push(spans);
+      });
+      container.appendChild(frag);
+    };
+
+    build();
+
+    let last = performance.now();
+    let mutateAccum = 0;
+    const tick = (now: number) => {
+      const dt = (now - last) / 1000;
+      last = now;
+      mutateAccum += dt;
+
+      const doMutate = mutateAccum > 0.25;
+      if (doMutate) mutateAccum = 0;
+
+      for (let i = 0; i < columns.length; i++) {
+        const col = columns[i];
+        col.offset += col.speed * dt;
+        if (col.offset - col.height > height) {
+          col.offset = -col.height;
         }
-        return newOffset;
-      });
-    }, 40);
+        columnEls[i].style.transform = `translate3d(0, ${col.offset}px, 0)`;
 
-    return () => clearInterval(interval);
-  }, [column]);
+        if (doMutate && Math.random() < 0.35) {
+          const idx = Math.floor(Math.random() * col.chars.length);
+          const ch = randChar();
+          col.chars[idx] = ch;
+          const span = charEls[i][idx];
+          if (span) span.textContent = ch;
+        }
+      }
 
-  // Randomly mutate characters
-  useEffect(() => {
-    const mutateInterval = setInterval(() => {
-      setChars(prev => {
-        const newChars = [...prev];
-        const indexToChange = Math.floor(Math.random() * newChars.length);
-        newChars[indexToChange] = CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
-        return newChars;
-      });
-    }, 150 + Math.random() * 300);
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
 
-    return () => clearInterval(mutateInterval);
+    let resizeTimer: number | undefined;
+    const onResize = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        build();
+      }, 200);
+    };
+    window.addEventListener('resize', onResize);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', onResize);
+      window.clearTimeout(resizeTimer);
+    };
   }, []);
-
-  const colorVar = `--${column.color}`;
 
   return (
     <div
-      className="absolute font-mono select-none pointer-events-none"
-      style={{
-        left: column.x,
-        top: offset,
-        fontSize: column.fontSize,
-        opacity: column.opacity,
-        writingMode: 'vertical-rl',
-        textOrientation: 'mixed',
-      }}
+      className="fixed inset-0 overflow-hidden pointer-events-none z-[1] fx-dim"
     >
-      {chars.map((char, index) => {
-        const isHead = index >= chars.length - 4;
-        const brightness = isHead ? 1 : 0.3 + (index / chars.length) * 0.7;
-        
-        return (
-          <span
-            key={index}
-            className="inline-block"
-            style={{
-              color: `hsl(var(${colorVar}) / ${brightness})`,
-              textShadow: isHead 
-                ? `0 0 15px hsl(var(${colorVar})), 0 0 30px hsl(var(${colorVar})), 0 0 45px hsl(var(${colorVar}) / 0.5)` 
-                : `0 0 8px hsl(var(${colorVar}) / 0.3)`,
-              fontWeight: isHead ? 600 : 400,
-            }}
-          >
-            {char}
-          </span>
-        );
-      })}
-    </div>
-  );
-}
+      <div ref={containerRef} className="absolute inset-0" />
 
-export default function MatrixRain() {
-  const [columns, setColumns] = useState<CodeColumn[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const screenWidth = window.innerWidth;
-    const columnCount = Math.floor(screenWidth / 40); // Slightly less dense for clarity
-    
-    const initialColumns = Array.from({ length: columnCount }, (_, i) => 
-      generateColumn(i, screenWidth)
-    );
-    
-    setColumns(initialColumns);
-
-    const handleResize = () => {
-      const newWidth = window.innerWidth;
-      const newCount = Math.floor(newWidth / 40);
-      setColumns(Array.from({ length: newCount }, (_, i) => generateColumn(i, newWidth)));
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return (
-    <div 
-      ref={containerRef}
-      className="fixed inset-0 overflow-hidden pointer-events-none z-[1]"
-    >
-      {/* Matrix columns */}
-      {columns.map(column => (
-        <MatrixColumn key={column.id} column={column} />
-      ))}
-      
-      {/* Colorful glow spots */}
-      <motion.div
-        className="absolute w-96 h-96 rounded-full"
+      <div
+        className="absolute w-[420px] h-[420px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, hsl(var(--primary) / 0.25) 0%, transparent 60%)',
-          left: '10%',
+          background: 'radial-gradient(circle, hsl(var(--primary) / 0.2) 0%, transparent 65%)',
+          left: '8%',
           top: '20%',
-          filter: 'blur(40px)',
-        }}
-        animate={{
-          scale: [1, 1.3, 1],
-          opacity: [0.5, 0.8, 0.5],
-        }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeInOut",
+          filter: 'blur(60px)',
         }}
       />
-      
-      <motion.div
-        className="absolute w-80 h-80 rounded-full"
+      <div
+        className="absolute w-[380px] h-[380px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, hsl(var(--secondary) / 0.25) 0%, transparent 60%)',
-          right: '15%',
-          top: '30%',
-          filter: 'blur(40px)',
-        }}
-        animate={{
-          scale: [1, 1.4, 1],
-          opacity: [0.4, 0.7, 0.4],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1,
+          background: 'radial-gradient(circle, hsl(var(--secondary) / 0.2) 0%, transparent 65%)',
+          right: '10%',
+          top: '35%',
+          filter: 'blur(60px)',
         }}
       />
-
-      <motion.div
-        className="absolute w-72 h-72 rounded-full"
+      <div
+        className="absolute w-[320px] h-[320px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, hsl(var(--accent) / 0.2) 0%, transparent 60%)',
-          left: '50%',
-          bottom: '20%',
-          transform: 'translateX(-50%)',
-          filter: 'blur(40px)',
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3],
-        }}
-        transition={{
-          duration: 7,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2,
-        }}
-      />
-
-      <motion.div
-        className="absolute w-64 h-64 rounded-full"
-        style={{
-          background: 'radial-gradient(circle, hsl(var(--primary) / 0.2) 0%, transparent 60%)',
-          right: '5%',
-          bottom: '10%',
-          filter: 'blur(30px)',
-        }}
-        animate={{
-          scale: [1, 1.5, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.5,
+          background: 'radial-gradient(circle, hsl(var(--accent) / 0.18) 0%, transparent 65%)',
+          left: '45%',
+          bottom: '15%',
+          filter: 'blur(60px)',
         }}
       />
     </div>

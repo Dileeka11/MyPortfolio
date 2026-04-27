@@ -65,7 +65,7 @@ function SkillCard({ skill, index }: { skill: typeof skills[0]; index: number })
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x: -50, rotateY: -15 }}
+      initial={{ opacity: 0, x: -20, rotateY: -10 }}
       animate={isInView ? { opacity: 1, x: 0, rotateY: 0 } : {}}
       transition={{ duration: 0.8, delay: index * 0.1, ease: [0.6, -0.05, 0.01, 0.99] }}
       onMouseEnter={() => setIsHovered(true)}
@@ -79,7 +79,7 @@ function SkillCard({ skill, index }: { skill: typeof skills[0]; index: number })
           z: isHovered ? 20 : 0,
         }}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        className="bg-card/80 backdrop-blur-xl rounded-2xl p-6 border border-border/50 hover:border-primary/30 transition-all relative overflow-hidden group"
+        className="bg-card/80 backdrop-blur-xl rounded-2xl p-4 sm:p-6 border border-border/50 hover:border-primary/30 transition-all relative overflow-hidden group"
       >
         {/* Animated background gradient */}
         <motion.div
@@ -140,7 +140,7 @@ export default function About() {
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
 
   return (
-    <section id="about" ref={containerRef} className="py-32 relative overflow-hidden bg-background/80 backdrop-blur-sm">
+    <section id="about" ref={containerRef} className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-background/80 backdrop-blur-sm">
       {/* Background elements */}
       <motion.div 
         style={{ y }}
@@ -151,13 +151,13 @@ export default function About() {
         className="absolute top-1/3 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" 
       />
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 80 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, ease: [0.6, -0.05, 0.01, 0.99] }}
-          className="text-center mb-20"
+          className="text-center mb-10 sm:mb-16 lg:mb-20"
         >
           <motion.span
             initial={{ opacity: 0, scale: 0.5, y: 20 }}
@@ -171,7 +171,7 @@ export default function About() {
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-5xl md:text-6xl font-bold"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold"
           >
             <span className="gradient-text">Who I Am</span>
           </motion.h2>
@@ -183,14 +183,15 @@ export default function About() {
           />
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-start overflow-hidden">
           {/* Left column - Bio */}
           <motion.div
-            initial={{ opacity: 0, x: -80 }}
+            initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 1, delay: 0.3, ease: [0.6, -0.05, 0.01, 0.99] }}
+            className="min-w-0 overflow-hidden"
           >
-            <div className="bg-card/80 backdrop-blur-xl rounded-3xl p-8 relative overflow-hidden border border-border/50">
+            <div className="bg-card/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 relative overflow-hidden border border-border/50">
               {/* Decorative corner */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/20 to-transparent rounded-bl-full" />
               
@@ -198,7 +199,7 @@ export default function About() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.5 }}
-                className="text-lg text-muted-foreground leading-relaxed mb-6"
+                className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-4 sm:mb-6"
               >
                 I'm a passionate <span className="text-primary font-semibold">software engineer</span> with 5+ years of 
                 experience building web applications that combine cutting-edge technology with beautiful design.
@@ -208,7 +209,7 @@ export default function About() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.6 }}
-                className="text-lg text-muted-foreground leading-relaxed mb-8"
+                className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-6 sm:mb-8"
               >
                 My journey started with curiosity about how things work, evolving into a career creating 
                 <span className="text-accent font-semibold"> digital experiences that matter</span>. I believe in 
@@ -216,7 +217,7 @@ export default function About() {
               </motion.p>
 
               {/* Tech icons grid */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4">
                 {techIcons.map((item, index) => (
                   <motion.div
                     key={item.label}
@@ -224,10 +225,10 @@ export default function About() {
                     animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
                     transition={{ duration: 0.6, delay: 0.7 + index * 0.1, ease: [0.6, -0.05, 0.01, 0.99] }}
                     whileHover={{ scale: 1.1, y: -8, rotate: 5 }}
-                    className="flex flex-col items-center gap-2 p-4 rounded-xl bg-muted/30 border border-border/30 hover:border-primary/30 transition-all group cursor-default"
+                    className="flex flex-col items-center gap-1.5 sm:gap-2 p-2.5 sm:p-4 rounded-xl bg-muted/30 border border-border/30 hover:border-primary/30 transition-all group cursor-default"
                   >
-                    <div className={`p-3 rounded-xl bg-gradient-to-br ${item.color} group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow`}>
-                      <item.icon className="w-5 h-5 text-white" />
+                    <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br ${item.color} group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow`}>
+                      <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </div>
                     <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">{item.label}</span>
                   </motion.div>
@@ -240,7 +241,7 @@ export default function About() {
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1, duration: 0.8 }}
-              className="h-64 mt-8 bg-card/60 backdrop-blur-xl rounded-2xl overflow-hidden border border-border/50"
+              className="h-48 sm:h-64 mt-6 sm:mt-8 bg-card/60 backdrop-blur-xl rounded-2xl overflow-hidden border border-border/50"
             >
               <SkillsScene />
             </motion.div>
@@ -248,11 +249,12 @@ export default function About() {
 
           {/* Right column - Skills */}
           <motion.div
-            initial={{ opacity: 0, x: 80 }}
+            initial={{ opacity: 0, x: 40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 1, delay: 0.5, ease: [0.6, -0.05, 0.01, 0.99] }}
+            className="min-w-0 overflow-hidden"
           >
-            <div className="bg-card/80 backdrop-blur-xl rounded-3xl p-8 border border-border/50">
+            <div className="bg-card/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-border/50 overflow-hidden">
               <div className="flex items-center gap-3 mb-8">
                 <motion.div 
                   initial={{ rotate: 0 }}
@@ -262,7 +264,7 @@ export default function About() {
                 >
                   <Zap className="w-5 h-5 text-primary" />
                 </motion.div>
-                <h3 className="text-2xl font-semibold text-foreground">Technical Skills</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold text-foreground">Technical Skills</h3>
               </div>
               
               <div className="space-y-4">
@@ -277,7 +279,7 @@ export default function About() {
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 1.2, duration: 0.8 }}
-              className="grid grid-cols-3 gap-4 mt-8"
+              className="grid grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-8"
             >
               {[
                 { value: '5+', label: 'Years Exp' },
@@ -290,10 +292,10 @@ export default function About() {
                   animate={isInView ? { opacity: 1, scale: 1 } : {}}
                   transition={{ delay: 1.3 + index * 0.1 }}
                   whileHover={{ y: -8, scale: 1.05 }}
-                  className="bg-card/80 backdrop-blur-xl rounded-2xl p-6 text-center border border-border/50 hover:border-primary/30 transition-all"
+                  className="bg-card/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center border border-border/50 hover:border-primary/30 transition-all"
                 >
                   <motion.div 
-                    className="text-3xl font-bold gradient-text mb-1"
+                    className="text-2xl sm:text-3xl font-bold gradient-text mb-1"
                     initial={{ opacity: 0, scale: 0 }}
                     animate={isInView ? { opacity: 1, scale: 1 } : {}}
                     transition={{ delay: 1.4 + index * 0.1, type: 'spring' }}

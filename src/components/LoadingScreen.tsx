@@ -49,23 +49,25 @@ export default function LoadingScreen() {
       {isLoading && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ 
+          exit={{
             opacity: 0,
             scale: 1.5,
             filter: 'blur(20px)',
+            pointerEvents: 'none',
           }}
-          transition={{ duration: 1, ease: [0.6, -0.05, 0.01, 0.99] }}
+          transition={{ duration: 0.6, ease: [0.6, -0.05, 0.01, 0.99] }}
           className="fixed inset-0 z-[10000] bg-background flex flex-col items-center justify-center"
         >
           {/* Animated background patterns */}
           <div className="absolute inset-0 overflow-hidden">
-            {[...Array(20)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <motion.div
                 key={i}
                 className="absolute w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent"
                 style={{
-                  left: `${(i / 20) * 100}%`,
+                  left: `${(i / 8) * 100}%`,
                   height: '100%',
+                  willChange: 'transform',
                 }}
                 initial={{ y: '-100%' }}
                 animate={{ y: '100%' }}
@@ -180,14 +182,14 @@ export default function LoadingScreen() {
                   transition={{ delay: 0.3 }}
                   className="text-3xl font-bold gradient-text"
                 >
-                  JD
+                  SD
                 </motion.span>
               </div>
             </motion.div>
           </motion.div>
 
           {/* Progress section */}
-          <div className="w-80 relative">
+          <div className="w-64 sm:w-80 relative">
             {/* Progress bar container */}
             <div className="relative h-1 bg-muted/30 rounded-full overflow-hidden">
               <motion.div

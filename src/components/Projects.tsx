@@ -108,7 +108,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
           className="bg-card/80 backdrop-blur-xl rounded-3xl overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-500 h-full shadow-xl"
         >
           {/* Image container */}
-          <div className="relative h-56 overflow-hidden">
+          <div className="relative h-40 sm:h-56 overflow-hidden">
             <motion.img
               src={project.image}
               alt={project.title}
@@ -177,9 +177,9 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <div className="flex items-start justify-between mb-3">
-              <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
+              <h3 className="text-base sm:text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
                 {project.title}
               </h3>
               <motion.div
@@ -233,7 +233,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
               className="bg-card/95 backdrop-blur-xl rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-auto border border-border/50 shadow-2xl"
             >
               <div className="relative">
-                <img src={project.image} alt={project.title} className="w-full h-64 object-cover" />
+                <img src={project.image} alt={project.title} className="w-full h-40 sm:h-64 object-cover" />
                 <button
                   onClick={() => setShowModal(false)}
                   className="absolute top-4 right-4 p-2 rounded-full bg-background/80 hover:bg-background transition-colors"
@@ -241,9 +241,9 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="p-8">
-                <h2 className="text-3xl font-bold gradient-text mb-4">{project.title}</h2>
-                <p className="text-muted-foreground mb-6">{project.description}</p>
+              <div className="p-5 sm:p-8">
+                <h2 className="text-xl sm:text-3xl font-bold gradient-text mb-3 sm:mb-4">{project.title}</h2>
+                <p className="text-muted-foreground text-sm sm:text-base mb-4 sm:mb-6">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-8">
                   {project.tags.map((tag) => (
                     <span key={tag} className="px-4 py-2 rounded-full bg-muted text-muted-foreground">
@@ -251,7 +251,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
                     </span>
                   ))}
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <a href={project.live} className="flex-1 py-3 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold text-center hover:shadow-lg transition-shadow">
                     View Live Demo
                   </a>
@@ -286,7 +286,7 @@ export default function Projects() {
     : projects.filter(p => p.category === filter);
 
   return (
-    <section id="projects" ref={containerRef} className="py-32 relative overflow-hidden bg-background/80 backdrop-blur-sm">
+    <section id="projects" ref={containerRef} className="py-16 sm:py-24 lg:py-32 relative overflow-hidden bg-background/80 backdrop-blur-sm">
       {/* Background elements */}
       <motion.div 
         style={{ y }}
@@ -297,13 +297,13 @@ export default function Projects() {
         className="absolute bottom-1/4 left-0 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" 
       />
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 80 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, ease: [0.6, -0.05, 0.01, 0.99] }}
-          className="text-center mb-20"
+          className="text-center mb-10 sm:mb-16 lg:mb-20"
         >
           <motion.span
             initial={{ opacity: 0, scale: 0.5, y: 20 }}
@@ -317,7 +317,7 @@ export default function Projects() {
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.3 }}
-            className="text-5xl md:text-6xl font-bold"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold"
           >
             <span className="gradient-text">Featured Projects</span>
           </motion.h2>
@@ -334,7 +334,7 @@ export default function Projects() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-wrap justify-center gap-3 mb-16"
+          className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-10 sm:mb-16"
         >
           {categories.map((category, index) => (
             <motion.button
@@ -343,15 +343,22 @@ export default function Projects() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.5 + index * 0.1 }}
-              whileHover={{ scale: 1.05, y: -3 }}
+              whileHover={{ y: -4 }}
               whileTap={{ scale: 0.95 }}
-              className={`px-6 py-3 rounded-full font-medium text-sm transition-all duration-300 ${
+              className={`relative px-4 sm:px-8 py-2.5 sm:py-3.5 rounded-full font-semibold text-xs sm:text-sm transition-all duration-500 overflow-hidden ${
                 filter === category.id
-                  ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg shadow-primary/25'
-                  : 'bg-card/80 backdrop-blur-sm border border-border/50 hover:border-primary/50 text-muted-foreground hover:text-foreground'
+                  ? 'text-primary-foreground'
+                  : 'text-muted-foreground hover:text-foreground bg-card/40 backdrop-blur-md border border-border/50 hover:border-primary/30'
               }`}
             >
-              {category.label}
+              {filter === category.id && (
+                <motion.div
+                  layoutId="activeFilter"
+                  className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary animate-gradient"
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">{category.label}</span>
             </motion.button>
           ))}
         </motion.div>
@@ -359,7 +366,7 @@ export default function Projects() {
         {/* Projects grid */}
         <motion.div 
           layout
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
         >
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
